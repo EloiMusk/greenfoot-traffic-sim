@@ -1,9 +1,16 @@
+import greenfoot.Color;
+import greenfoot.Greenfoot;
+import greenfoot.GreenfootImage;
 import greenfoot.World;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Environment extends World {
     private boolean initialized = false;
+    private ArrayList<LaneData> horizontalLanes = new ArrayList<LaneData>();
+    private ArrayList<LaneData> verticalLanes = new ArrayList<LaneData>();
+    private ArrayList<Position> intersections = new ArrayList<Position>();
 
     public Environment() {
         super(600, 600, 1, false);
@@ -18,97 +25,117 @@ public class Environment extends World {
     }
 
     public void init() {
-        generateLanes();
+//        generateLanes();
+//        getIntersections();
+//        markIntersections();
+//        drawLanes();
+        drawStreet();
+    }
+
+    private void drawStreet() {
+        GreenfootImage background = getBackground();
+        background.setColor(Color.WHITE);
+        background.fill();
+        background.setColor(Color.BLACK);
+        Position a = new Position(getWidth() / 2, getHeight());
+        background.drawLine(a.x, a.y, a.x, a.y);
+        int margin = 100;
+        while (a.y > 0) {
+            margin--;
+            if (a.y % (Greenfoot.getRandomNumber(600) + 1) == 0 && margin <= 0 && a.y > 100) {
+                margin = 100;
+
+                int xb = getWidth();
+                int xa = a.x;
+                if (Greenfoot.getRandomNumber(100) % 3 == 0) {
+                    background.setColor(Color.BLUE);
+                    xa = 0;
+                } else if (Greenfoot.getRandomNumber(100) % 2 == 0) {
+                    background.setColor(Color.RED);
+                    xb = 0;
+                } else {
+                    background.setColor(Color.GREEN);
+                    xb = getWidth();
+                }
+                background.drawLine(xa, a.y, xb, a.y);
+
+            } else {
+                background.setColor(Color.BLACK);
+            }
+            a.y--;
+            background.drawLine(a.x, a.y, a.x, a.y);
+        }
+    }
+
+    private void drawLanes() {
+        ArrayList<LaneData> lanes = new ArrayList<LaneData>();
+        lanes.addAll(horizontalLanes);
+        lanes.addAll(verticalLanes);
+        for (LaneData lane : lanes) {
+            Lane laneActor = new Lane(lane.vector.a, lane.vector.b);
+            laneActor.intersections = lane.intersections;
+            addObject(laneActor, 0, 0);
+        }
+    }
+
+    private void markIntersections() {
+        int radius = 80;
+        for (LaneData lane : horizontalLanes) {
+            for (Position intersection : lane.intersections) {
+                getBackground().setColor(Color.RED);
+                getBackground().fillOval(intersection.x - radius, intersection.y - radius / 2, radius / 2, radius);
+                getBackground().setColor(Color.YELLOW);
+                getBackground().fillOval(intersection.x + radius / 2, intersection.y - radius / 2, radius / 2, radius);
+            }
+        }
+        for (LaneData lane : verticalLanes) {
+            for (Position intersection : lane.intersections) {
+                getBackground().setColor(Color.BLUE);
+                getBackground().fillOval(intersection.x - radius / 2, intersection.y - radius, radius, radius / 2);
+                getBackground().setColor(Color.GREEN);
+                getBackground().fillOval(intersection.x - radius / 2, intersection.y + radius / 2, radius, radius / 2);
+            }
+        }
+
     }
 
 
     public void generateLanes() {
         Random rand = new Random();
-        int numLanes = rand.nextInt(5) + 1; // Generate a random number of lanes between 1 and 5
-        int laneWidth = 100; // Set the width of each lane
-        int laneLength = getHeight() / numLanes; // Calculate the length of each lane based on the number of lanes and the height of the world
+        int numberOfVerticalLanes = rand.nextInt(1) + 1;
+        int numberOfHorizontalLanes = rand.nextInt(2) + 1;
+        int numberOfLanes = numberOfVerticalLanes + numberOfHorizontalLanes;
+        int oldX = 0;
+        int oldY = 0;
+//        Generate horizontal lanes.
+        for (int i = 0; i < numberOfHorizontalLanes; i++) {
+            int x1 = 0;
+//            A number between 0 and 600.
+            int y1 = oldY + rand.nextInt(((600 - (50 * numberOfHorizontalLanes)) / numberOfHorizontalLanes) - 25) + 75;
+            oldY = y1;
+            int x2 = getWidth();
+            int y2 = y1;
+            horizontalLanes.add(new LaneData(new Vector(new Position(x1, y1), new Position(x2, y2))));
+        }
+//        Generate vertical lanes.
+        for (int i = 0; i < numberOfVerticalLanes; i++) {
+            int x1 = oldX + rand.nextInt(((600 - (50 * numberOfVerticalLanes)) / numberOfVerticalLanes) - 25) + 75;
+            oldX = x1;
+            int y1 = 0;
+            int x2 = x1;
+            int y2 = getHeight();
+            verticalLanes.add(new LaneData(new Vector(new Position(x1, y1), new Position(x2, y2))));
+        }
+    }
 
-        // Generate a random starting position and direction for the first lane, making sure that the starting position is on one of the borders of the Environment
-        int x, y, direction;
-        if (rand.nextBoolean()) {
-            // Start the lane on the top or bottom border
-            x = rand.nextInt(getWidth());
-            if (rand.nextBoolean()) {
-                // Start the lane on the top border
-                y = 0;
-                direction = 90;
-            } else {
-                // Start the lane on the bottom border
-                y = getHeight() - laneWidth;
-                direction = 270;
-            }
-        } else {
-            // Start the lane on the left or right border
-            y = rand.nextInt(getHeight());
-            if (rand.nextBoolean()) {
-                // Start the lane on the left border
-                x = 0;
-                direction = 0;
-            } else {
-                // Start the lane on the right border
-                x = getWidth() - laneWidth;
-                direction = 180;
-            }
-
-            // Calculate the ending position of the first lane based on the starting position, direction, and length, making sure that the ending position is also on one of the borders of the Environment
-            int x2 = x + (int) (Math.cos(Math.toRadians(direction)) * laneLength);
-            int y2 = y + (int) (Math.sin(Math.toRadians(direction)) * laneLength);
-            if (x2 < 0 || x2 >= getWidth()) {
-                // The ending position is on the left or right border
-                x2 = (x2 < 0) ? 0 : getWidth() - laneWidth;
-                y2 = y;
-            } else if (y2 < 0 || y2 >= getHeight()) {
-                // The ending position is on the top or bottom border
-                x2 = x;
-                y2 = (y2 < 0) ? 0 : getHeight() - laneWidth;
-            }
-
-            // Create the first lane with the calculated starting and ending positions
-            Lane lane = new Lane(x, y, x2, y2);
-
-            // Add the first lane to the world
-            addObject(lane, 0, 0);
-            // Generate the remaining lanes
-            for (int i = 1; i < numLanes; i++) {
-                // Use the ending position of the previous lane as the starting position for the next lane
-                x = x2;
-                y = y2;
-
-                // Generate a random direction for the next lane, either parallel or perpendicular to the previous lane
-                if (rand.nextBoolean()) {
-                    // Keep the same direction as the previous lane
-                    direction = lane.vector.getDirection();
-                } else {
-                    // Change the direction to be perpendicular to the previous lane
-                    direction = lane.vector.getDirection() + 90;
-                    if (direction >= 360) {
-                        direction -= 360;
-                    }
+    public void getIntersections() {
+        for (LaneData horizontalLane : horizontalLanes) {
+            for (LaneData verticalLane : verticalLanes) {
+                Position intersection = horizontalLane.vector.getIntersection(verticalLane.vector);
+                if (intersection != null) {
+                    horizontalLane.intersections.add(intersection);
+                    verticalLane.intersections.add(intersection);
                 }
-
-                // Calculate the ending position of the next lane based on the starting position, direction, and length, making sure that the ending position is also on one of the borders of the Environment
-                x2 = x + (int) (Math.cos(Math.toRadians(direction)) * laneLength);
-                y2 = y + (int) (Math.sin(Math.toRadians(direction)) * laneLength);
-                if (x2 < 0 || x2 >= getWidth()) {
-                    // The ending position is on the left or right border
-                    x2 = (x2 < 0) ? 0 : getWidth() - laneWidth;
-                    y2 = y;
-                } else if (y2 < 0 || y2 >= getHeight()) {
-                    // The ending position is on the top or bottom border
-                    x2 = x;
-                    y2 = (y2 < 0) ? 0 : getHeight() - laneWidth;
-                }
-
-                // Create the next lane with the calculated starting and ending positions
-                lane = new Lane(x, y, x2, y2);
-
-                // Add the next lane to the world
-                addObject(lane, 0, 0);
             }
         }
     }
