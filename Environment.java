@@ -33,38 +33,58 @@ public class Environment extends World {
     }
 
     private void drawStreet() {
+        int roadWidth = 50;
         GreenfootImage background = getBackground();
-        background.setColor(Color.WHITE);
-        background.fill();
         background.setColor(Color.BLACK);
-        Position a = new Position(getWidth() / 2, getHeight());
-        background.drawLine(a.x, a.y, a.x, a.y);
+        Position oldPos = new Position(getWidth() / 2, getHeight());
+        Position newPos = new Position(getWidth() / 2, getHeight());
+        Position verticalPosA = new Position(0, 0);
+        Position verticalPosB = new Position(0, 0);
+//        background.drawLine(oldPos.x, oldPos.y, newPos.x, newPos.y);
         int margin = 100;
-        while (a.y > 0) {
+        while (newPos.y > 0) {
             margin--;
-            if (a.y % (Greenfoot.getRandomNumber(600) + 1) == 0 && margin <= 0 && a.y > 100) {
+            if (newPos.y % (Greenfoot.getRandomNumber(600) + 1) == 0 && margin <= 0 && newPos.y > 100) {
                 margin = 100;
 
-                int xb = getWidth();
-                int xa = a.x;
-                if (Greenfoot.getRandomNumber(100) % 3 == 0) {
-                    background.setColor(Color.BLUE);
-                    xa = 0;
-                } else if (Greenfoot.getRandomNumber(100) % 2 == 0) {
-                    background.setColor(Color.RED);
-                    xb = 0;
-                } else {
-                    background.setColor(Color.GREEN);
-                    xb = getWidth();
-                }
-                background.drawLine(xa, a.y, xb, a.y);
+                verticalPosA.y = newPos.y;
+                verticalPosB.y = newPos.y;
 
-            } else {
+                switch (Greenfoot.getRandomNumber(3)) {
+                    case 0:
+                        background.setColor(Color.BLACK);
+                        verticalPosA.x = 0;
+                        verticalPosB.x = newPos.x;
+                        break;
+                    case 1:
+                        background.setColor(Color.BLACK);
+                        verticalPosA.x = newPos.x;
+                        verticalPosB.x = getWidth();
+                        break;
+                    case 2:
+                        background.setColor(Color.BLACK);
+                        verticalPosA.x = 0;
+                        verticalPosB.x = getWidth();
+                        break;
+                }
+
+                background.fillRect(verticalPosA.x, verticalPosA.y - (roadWidth / 2), (verticalPosA.x - verticalPosB.x) * -1, roadWidth);
+                background.setColor(Color.WHITE);
+                background.drawLine(verticalPosA.x + (roadWidth / 2), verticalPosA.y, verticalPosB.x - (roadWidth / 2), verticalPosB.y);
+//                Fill intersection like this:
                 background.setColor(Color.BLACK);
+//                background.fillRect(newPos.x - (roadWidth / 2), newPos.y - (roadWidth / 2), roadWidth, roadWidth);
+                background.fillRect(newPos.x - (roadWidth / 2), newPos.y, roadWidth, Math.subtractExact(oldPos.y, newPos.y));
+                background.setColor(Color.WHITE);
+                background.drawLine(oldPos.x, oldPos.y - (roadWidth / 2), newPos.x, newPos.y + (roadWidth / 2));
+                oldPos.y = newPos.y;
             }
-            a.y--;
-            background.drawLine(a.x, a.y, a.x, a.y);
+            newPos.y--;
         }
+        background.setColor(Color.BLACK);
+        background.fillRect(newPos.x - (roadWidth / 2), newPos.y, roadWidth, Math.subtractExact(oldPos.y, newPos.y));
+        background.setColor(Color.WHITE);
+        background.drawLine(oldPos.x, oldPos.y - (roadWidth / 2), newPos.x, newPos.y);
     }
 
     private void drawLanes() {
