@@ -10,7 +10,7 @@ public class Vector {
     public int getDistance() {
         int x = b.x - a.x;
         int y = b.y - a.y;
-        return (int) Math.sqrt(x * x + y * y);
+        return (int) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public int getDirection() {
