@@ -1,6 +1,5 @@
 import greenfoot.Actor;
 import greenfoot.Color;
-import greenfoot.GreenfootImage;
 
 import java.util.ArrayList;
 
@@ -26,7 +25,7 @@ public class Lane extends Actor {
 
     private void init() {
         // Scale the actor according to the length of the vector.
-        int length = vector.getLength();
+        int length = vector.getDistance();
         setImage("textures/lane/1.jpg");
         getImage().scale(50, length);
         for (Position intersection : intersections) {

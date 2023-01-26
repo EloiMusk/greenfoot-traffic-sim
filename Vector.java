@@ -7,7 +7,7 @@ public class Vector {
         this.b = b;
     }
 
-    public int getLength() {
+    public int getDistance() {
         int x = b.x - a.x;
         int y = b.y - a.y;
         return (int) Math.sqrt(x * x + y * y);

@@ -3,16 +3,9 @@ import greenfoot.Greenfoot;
 import greenfoot.GreenfootImage;
 import greenfoot.World;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-
 public class Environment extends World {
+    public Graph roadNetwork = new Graph();
     private boolean initialized = false;
-    private ArrayList<WayPoint> wayPoints = new ArrayList<WayPoint>();
 
     public Environment() {
         super(600, 600, 1, false);
@@ -31,138 +24,205 @@ public class Environment extends World {
 //        getIntersections();
 //        markIntersections();
 //        drawLanes();
-        drawStreet();
+//        drawStreet();
+        generateGraph();
         markWayPoints();
-        resolveStartWayPoints();
         connectWayPoints();
     }
 
-
-    private void connectWayPoints() {
-        for (WayPoint wayPoint : wayPoints) {
-            if (wayPoint.type == WayPointType.START) {
-                getBackground().setColor(Color.GREEN);
-            } else if (wayPoint.type == WayPointType.END) {
-                getBackground().setColor(Color.RED);
-            } else if (wayPoint.type == WayPointType.INTERSECTION) {
-                getBackground().setColor(Color.BLUE);
-            }
-            for (WayPoint wayPoint1 : wayPoint.wayPoints) {
-                getBackground().drawLine(wayPoint.location.x, wayPoint.location.y, wayPoint1.location.x, wayPoint1.location.y);
-                getBackground().setColor(Color.PINK);
-                getBackground().fillRect(wayPoint1.location.x - 3, wayPoint1.location.y - 3, 6, 6);
-            }
-
-        }
-    }
-
-    private void markWayPoints() {
-        for (WayPoint wayPoint : wayPoints) {
-            if (wayPoint.type == WayPointType.START)
-                getBackground().setColor(Color.GREEN);
-            else if (wayPoint.type == WayPointType.END)
-                getBackground().setColor(Color.RED);
-            else if (wayPoint.type == WayPointType.INTERSECTION)
-                getBackground().setColor(Color.BLUE);
-            getBackground().fillRect(wayPoint.location.x - 5, wayPoint.location.y - 5, 10, 10);
-        }
-    }
-
-    private void resolveStartWayPoints() {
-        for (WayPoint wayPoint : wayPoints.stream().filter(wayPoint -> wayPoint.type == WayPointType.START).collect(Collectors.toList())) {
-//            Forwards horizontal Resolution
-            if (wayPoint.location.x <= getWidth() / 2)
-                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.x == wayPoint.location.x).min(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.y)).ifPresent(point -> wayPoint.wayPoints.add(point));
-//            Forwards vertical Resolution
-            if (wayPoint.location.y > getHeight() - 150)
-                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.y == wayPoint.location.y).min(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.x)).ifPresent(point -> wayPoint.wayPoints.add(point));
-//            Backwards horizontal Resolution
-            if (wayPoint.location.x > getWidth() / 2)
-                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.x == wayPoint.location.x).max(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.y)).stream().findFirst().ifPresent(point -> wayPoint.wayPoints.add(point));
-//            Backwards vertical Resolution
-            if (wayPoint.location.y < 10)
-                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.y == wayPoint.location.y).max(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.x)).stream().findFirst().ifPresent(point -> wayPoint.wayPoints.add(point));
-        }
-    }
-
-    private void drawStreet() {
-        int roadWidth = 50;
-        GreenfootImage background = getBackground();
-        background.setColor(Color.BLACK);
+    private void generateGraph() {
         Position oldPos = new Position(getWidth() / 2, getHeight());
         Position newPos = new Position(getWidth() / 2, getHeight());
-        Position verticalPosA = new Position(0, 0);
-        Position verticalPosB = new Position(0, 0);
+        GreenfootImage background = getBackground();
+        int roadWidth = 50;
 //        background.drawLine(oldPos.x, oldPos.y, newPos.x, newPos.y);
+        WayPoint oldWayPoint = new WayPoint(new Position(oldPos.x, oldPos.y));
+        WayPoint newWayPoint = new WayPoint(new Position(newPos.x, newPos.y));
         int margin = 100;
-        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y), WayPointType.START));
-        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y), WayPointType.END));
         while (newPos.y > 0) {
             margin--;
             if (newPos.y % (Greenfoot.getRandomNumber(600) + 1) == 0 && margin <= 0 && newPos.y > 100) {
                 margin = 100;
 
-                verticalPosA.y = newPos.y;
-                verticalPosB.y = newPos.y;
+                Position verticalPosA = new Position(0, newPos.y);
+                Position verticalPosB = new Position(0, newPos.y);
+                newWayPoint = new WayPoint(new Position(newPos.x, newPos.y));
+                roadNetwork.addNewEdge(new Edge(oldWayPoint, newWayPoint, Direction.NORTH), true);
 
                 switch (Greenfoot.getRandomNumber(3)) {
 //                    Left
                     case 0:
-                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION));
-                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION));
-                        background.setColor(Color.BLACK);
                         verticalPosA.x = 0;
-                        verticalPosB.x = newPos.x;
-//                        Start and End WayPoints
-                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y + (roadWidth / 4)), WayPointType.START));
-                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y - (roadWidth / 4)), WayPointType.END));
+                        roadNetwork.addNewEdge(new Edge(newWayPoint, new WayPoint(verticalPosA), Direction.WEST), Greenfoot.getRandomNumber(10) % 2 == 0);
                         break;
 //                        Right
                     case 1:
-                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION));
-                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION));
-                        background.setColor(Color.BLACK);
-                        verticalPosA.x = newPos.x;
                         verticalPosB.x = getWidth();
+                        roadNetwork.addNewEdge(new Edge(newWayPoint, new WayPoint(verticalPosB), Direction.EAST), Greenfoot.getRandomNumber(10) % 2 == 0);
 //                        Start and End WayPoints
-                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y - (roadWidth / 4)), WayPointType.START));
-                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y + (roadWidth / 4)), WayPointType.END));
                         break;
 //                        Straight
                     case 2:
-                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION));
-                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION));
-                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION));
-                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION));
-                        background.setColor(Color.BLACK);
                         verticalPosA.x = 0;
                         verticalPosB.x = getWidth();
-                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y + (roadWidth / 4)), WayPointType.START));
-                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y - (roadWidth / 4)), WayPointType.END));
-                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y - (roadWidth / 4)), WayPointType.START));
-                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y + (roadWidth / 4)), WayPointType.END));
+                        roadNetwork.addNewEdge(new Edge(newWayPoint, new WayPoint(verticalPosA), Direction.WEST), Greenfoot.getRandomNumber(10) % 2 == 0);
+                        roadNetwork.addNewEdge(new Edge(newWayPoint, new WayPoint(verticalPosB), Direction.EAST), Greenfoot.getRandomNumber(10) % 2 == 0);
                         break;
                 }
-                background.fillRect(verticalPosA.x, verticalPosA.y - (roadWidth / 2), (verticalPosA.x - verticalPosB.x) * -1, roadWidth);
-                background.setColor(Color.WHITE);
-                background.drawLine(verticalPosA.x + (roadWidth / 2), verticalPosA.y, verticalPosB.x - (roadWidth / 2), verticalPosB.y);
-//                Fill intersection like this:
-                background.setColor(Color.BLACK);
-//                background.fillRect(newPos.x - (roadWidth / 2), newPos.y - (roadWidth / 2), roadWidth, roadWidth);
-                background.fillRect(newPos.x - (roadWidth / 2), newPos.y, roadWidth, Math.subtractExact(oldPos.y, newPos.y));
-                background.setColor(Color.WHITE);
-                background.drawLine(oldPos.x, oldPos.y - (roadWidth / 2), newPos.x, newPos.y + (roadWidth / 2));
                 oldPos.y = newPos.y;
+                oldWayPoint = newWayPoint;
             }
             newPos.y--;
         }
-        background.setColor(Color.BLACK);
-        background.fillRect(newPos.x - (roadWidth / 2), newPos.y, roadWidth, Math.subtractExact(oldPos.y, newPos.y));
-        background.setColor(Color.WHITE);
-        background.drawLine(oldPos.x, oldPos.y - (roadWidth / 2), newPos.x, newPos.y);
-        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y), WayPointType.START));
-        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y), WayPointType.END));
+        oldWayPoint = newWayPoint;
+        newWayPoint = new WayPoint(new Position(newPos.x, newPos.y));
+        roadNetwork.addNewEdge(new Edge(oldWayPoint, newWayPoint, Direction.NORTH), true);
+        System.out.println(roadNetwork.toString());
     }
+
+
+    private void connectWayPoints() {
+        WayPoint[] wayPoints = roadNetwork.getVertices();
+        for (WayPoint wayPoint : wayPoints) {
+            for (Node edge : roadNetwork.getEdges(wayPoint)) {
+                switch (edge.direction){
+                    case NORTH:
+                        getBackground().setColor(Color.RED);
+                        getBackground().drawLine(wayPoint.location.x, wayPoint.location.y, edge.value.location.x, edge.value.location.y);
+                        break;
+                    case EAST:
+                        getBackground().setColor(Color.GREEN);
+                        getBackground().drawLine(wayPoint.location.x, wayPoint.location.y, edge.value.location.x, edge.value.location.y);
+                        break;
+                    case SOUTH:
+                        getBackground().setColor(Color.BLUE);
+                        getBackground().drawLine(wayPoint.location.x, wayPoint.location.y, edge.value.location.x, edge.value.location.y);
+
+                        break;
+                    case WEST:
+                        getBackground().setColor(Color.YELLOW);
+                        break;
+                }
+            }
+        }
+    }
+
+    private void markWayPoints() {
+        WayPoint[] wayPoints = roadNetwork.getVertices();
+        System.out.println("WayPoints: " + wayPoints.length);
+        for (WayPoint wayPoint : wayPoints) {
+            getBackground().setColor(Color.WHITE);
+            getBackground().fillRect(wayPoint.location.x - 5, wayPoint.location.y - 5, 10, 10);
+        }
+    }
+
+//    private void resolveStartWayPoints() {
+//        wayPoints.forEach(wayPoint ->
+//                wayPoint.wayPoints.addAll(
+//                        wayPoints
+//                                .stream().filter(wayPoint::waypointFilter)
+//                                .collect(Collectors.toList())));
+////        Print the index of each waypoint with a list of the indexes of his waypoints
+//        wayPoints.forEach(wayPoint -> {
+//            System.out.print("[" + wayPoints.indexOf(wayPoint) + " : " +wayPoint.direction.name() + "] -> ");
+//            wayPoint.wayPoints.forEach(wayPoint1 -> System.out.print("[" + wayPoints.indexOf(wayPoint1) + "]"));
+//            System.out.println();
+//        });
+////        for (WayPoint wayPoint : wayPoints.stream().filter(wayPoint -> wayPoint.type == WayPointType.START).collect(Collectors.toList())) {
+//////            Forwards horizontal Resolution
+////            if (wayPoint.location.x <= getWidth() / 2)
+////                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.x == wayPoint.location.x).min(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.y)).ifPresent(point -> wayPoint.wayPoints.add(point)
+////                );
+//////            Forwards vertical Resolution
+////            if (wayPoint.location.y > getHeight() - 150)
+////                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.y == wayPoint.location.y).min(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.x)).ifPresent(point -> wayPoint.wayPoints.add(point));
+//////            Backwards horizontal Resolution
+////            if (wayPoint.location.x > getWidth() / 2)
+////                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.x == wayPoint.location.x).max(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.y)).stream().findFirst().ifPresent(point -> wayPoint.wayPoints.add(point));
+//////            Backwards vertical Resolution
+////            if (wayPoint.location.y < 10)
+////                wayPoints.stream().filter(wayPoint1 -> wayPoint1.type != WayPointType.START && wayPoint1.location.y == wayPoint.location.y).max(Comparator.comparingInt(wayPoint2 -> wayPoint2.location.x)).stream().findFirst().ifPresent(point -> wayPoint.wayPoints.add(point));
+////        }
+//    }
+
+//    private void drawStreet() {
+//        int roadWidth = 50;
+//        GreenfootImage background = getBackground();
+//        background.setColor(Color.BLACK);
+//        Position oldPos = new Position(getWidth() / 2, getHeight());
+//        Position newPos = new Position(getWidth() / 2, getHeight());
+//        Position verticalPosA = new Position(0, 0);
+//        Position verticalPosB = new Position(0, 0);
+////        background.drawLine(oldPos.x, oldPos.y, newPos.x, newPos.y);
+//        int margin = 100;
+//        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y), WayPointType.START, Direction.NORTH));
+//        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y), WayPointType.END, Direction.SOUTH));
+//        while (newPos.y > 0) {
+//            margin--;
+//            if (newPos.y % (Greenfoot.getRandomNumber(600) + 1) == 0 && margin <= 0 && newPos.y > 100) {
+//                margin = 100;
+//
+//                verticalPosA.y = newPos.y;
+//                verticalPosB.y = newPos.y;
+//
+//                switch (Greenfoot.getRandomNumber(3)) {
+////                    Left
+//                    case 0:
+//                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION, Direction.SOUTH));
+//                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION, Direction.SOUTH));
+//                        background.setColor(Color.BLACK);
+//                        verticalPosA.x = 0;
+//                        verticalPosB.x = newPos.x;
+////                        Start and End WayPoints
+//                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y + (roadWidth / 4)), WayPointType.START, Direction.EAST));
+//                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y - (roadWidth / 4)), WayPointType.END, Direction.WEST));
+//                        break;
+////                        Right
+//                    case 1:
+//                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION, Direction.NORTH));
+//                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION, Direction.NORTH));
+//                        background.setColor(Color.BLACK);
+//                        verticalPosA.x = newPos.x;
+//                        verticalPosB.x = getWidth();
+////                        Start and End WayPoints
+//                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y - (roadWidth / 4)), WayPointType.START, Direction.WEST));
+//                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y + (roadWidth / 4)), WayPointType.END, Direction.EAST));
+//                        break;
+////                        Straight
+//                    case 2:
+//                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION, Direction.NORTH));
+//                        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION, Direction.NORTH));
+//                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y + (roadWidth / 4)), WayPointType.INTERSECTION, Direction.EAST));
+//                        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y - (roadWidth / 4)), WayPointType.INTERSECTION, Direction.EAST));
+//                        background.setColor(Color.BLACK);
+//                        verticalPosA.x = 0;
+//                        verticalPosB.x = getWidth();
+//                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y + (roadWidth / 4)), WayPointType.START, Direction.EAST));
+//                        wayPoints.add(new WayPoint(new Position(verticalPosA.x, newPos.y - (roadWidth / 4)), WayPointType.END, Direction.WEST));
+//                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y - (roadWidth / 4)), WayPointType.START, Direction.WEST));
+//                        wayPoints.add(new WayPoint(new Position(verticalPosB.x, newPos.y + (roadWidth / 4)), WayPointType.END, Direction.EAST));
+//                        break;
+//                }
+//                background.fillRect(verticalPosA.x, verticalPosA.y - (roadWidth / 2), (verticalPosA.x - verticalPosB.x) * -1, roadWidth);
+//                background.setColor(Color.WHITE);
+//                background.drawLine(verticalPosA.x + (roadWidth / 2), verticalPosA.y, verticalPosB.x - (roadWidth / 2), verticalPosB.y);
+////                Fill intersection like this:
+//                background.setColor(Color.BLACK);
+////                background.fillRect(newPos.x - (roadWidth / 2), newPos.y - (roadWidth / 2), roadWidth, roadWidth);
+//                background.fillRect(newPos.x - (roadWidth / 2), newPos.y, roadWidth, Math.subtractExact(oldPos.y, newPos.y));
+//                background.setColor(Color.WHITE);
+//                background.drawLine(oldPos.x, oldPos.y - (roadWidth / 2), newPos.x, newPos.y + (roadWidth / 2));
+//                oldPos.y = newPos.y;
+//            }
+//            newPos.y--;
+//        }
+//        background.setColor(Color.BLACK);
+//        background.fillRect(newPos.x - (roadWidth / 2), newPos.y, roadWidth, Math.subtractExact(oldPos.y, newPos.y));
+//        background.setColor(Color.WHITE);
+//        background.drawLine(oldPos.x, oldPos.y - (roadWidth / 2), newPos.x, newPos.y);
+//        wayPoints.add(new WayPoint(new Position(newPos.x - (roadWidth / 4), newPos.y), WayPointType.START, Direction.SOUTH));
+//        wayPoints.add(new WayPoint(new Position(newPos.x + (roadWidth / 4), newPos.y), WayPointType.END, Direction.NORTH));
+//    }
 
 //    private void drawLanes() {
 //        ArrayList<LaneData> lanes = new ArrayList<LaneData>();
