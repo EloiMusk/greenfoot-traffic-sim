@@ -3,6 +3,8 @@ import greenfoot.Greenfoot;
 import greenfoot.GreenfootImage;
 import greenfoot.World;
 
+import java.util.Arrays;
+
 public class Environment extends World {
     public Graph roadNetwork = new Graph();
     private boolean initialized = false;
@@ -34,6 +36,20 @@ public class Environment extends World {
         Node[] edges = this.roadNetwork.getEdges(startWayPoint);
         Node nextNode = edges[Greenfoot.getRandomNumber(edges.length)];
         car.setNextNode(nextNode);
+    }
+
+    public void removeCar(Car car) {
+        removeObject(car);
+        spawnCar();
+    }
+
+    public Node getRandomNextNode(Node node) {
+        Node[] edges = Arrays.stream(this.roadNetwork.getEdges(node.value)).filter(edge -> edge.direction != node.direction.reverseDirection()).toArray(Node[]::new);
+        if (edges.length == 0) {
+            return null;
+        } else {
+            return edges[Greenfoot.getRandomNumber(edges.length)];
+        }
     }
 
     private void generateGraph() {
@@ -83,7 +99,7 @@ public class Environment extends World {
         oldWayPoint = newWayPoint;
         newWayPoint = new WayPoint(new Position(newPos.x, newPos.y));
         roadNetwork.addNewEdge(new Edge(oldWayPoint, newWayPoint, Direction.NORTH), true);
-        System.out.println(roadNetwork.toString());
+//        System.out.println(roadNetwork.toString());
     }
 
 

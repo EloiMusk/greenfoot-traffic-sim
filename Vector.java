@@ -7,6 +7,11 @@ public class Vector {
         this.b = b;
     }
 
+    public Vector(int x1, int y1, int x2, int y2) {
+        this.a = new Position(x1, y1);
+        this.b = new Position(x2, y2);
+    }
+
     public int getDistance() {
         int x = b.x - a.x;
         int y = b.y - a.y;
@@ -17,6 +22,21 @@ public class Vector {
         int x = b.x - a.x;
         int y = b.y - a.y;
         return (int) Math.toDegrees(Math.atan2(y, x));
+    }
+
+    public Direction getOrientation() {
+        int direction = getDirection();
+        if (direction >= 0 && direction < 45) {
+            return Direction.EAST;
+        } else if (direction >= 45 && direction < 135) {
+            return Direction.SOUTH;
+        } else if (direction >= 135 && direction < 225) {
+            return Direction.WEST;
+        } else if (direction >= 225 && direction < 315) {
+            return Direction.NORTH;
+        } else {
+            return Direction.EAST;
+        }
     }
 
     public Position getIntersection(Vector vector) {
