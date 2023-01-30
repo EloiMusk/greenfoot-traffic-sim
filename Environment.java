@@ -23,6 +23,17 @@ public class Environment extends World {
         generateGraph();
         markWayPoints();
         connectWayPoints();
+        spawnCar();
+    }
+
+    public void spawnCar() {
+        Car car = new Car();
+        WayPoint[] incomingWayPoints = this.roadNetwork.getAllIncomingEdgeNodes();
+        WayPoint startWayPoint = incomingWayPoints[Greenfoot.getRandomNumber(incomingWayPoints.length)];
+        addObject(car, startWayPoint.location.x, startWayPoint.location.y);
+        Node[] edges = this.roadNetwork.getEdges(startWayPoint);
+        Node nextNode = edges[Greenfoot.getRandomNumber(edges.length)];
+        car.setNextNode(nextNode);
     }
 
     private void generateGraph() {
@@ -99,7 +110,7 @@ public class Environment extends World {
                         getBackground().fillRect(x, y, new Vector(wayPoint.location, edge.value.location).getDistance(), roadWidth);
                         break;
                     case SOUTH:
-                        getBackground().fillRect(wayPoint.location.x  - roadWidth, wayPoint.location.y, roadWidth, new Vector(wayPoint.location, edge.value.location).getDistance());
+                        getBackground().fillRect(wayPoint.location.x - roadWidth, wayPoint.location.y, roadWidth, new Vector(wayPoint.location, edge.value.location).getDistance());
                         break;
                     case WEST:
                         if (edge.value.location.x < wayPoint.location.x) {

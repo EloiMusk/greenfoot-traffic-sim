@@ -17,6 +17,11 @@ class Graph {
         this.currentWayPoint = currentWayPoint;
     }
 
+    public WayPoint[] getAllIncomingEdgeNodes() {
+        // All nodes that have only one outgoing edge
+        return map.keySet().stream().filter(wayPoint -> map.get(wayPoint).size() == 1).toArray(WayPoint[]::new);
+    }
+
     public Node[] getEdges(WayPoint source) {
         return map.get(source).toArray(new Node[0]);
     }
