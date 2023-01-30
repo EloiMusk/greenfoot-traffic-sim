@@ -6,6 +6,8 @@ public class Car extends Actor {
 
     private Node nextNode;
 
+    public WayPoint lastWayPoint;
+
     private Direction orientation;
 
     public Car() {
