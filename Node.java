@@ -3,6 +3,8 @@ public class Node {
     WayPoint value;
     Direction direction;
 
+    int speedLimit = 50;
+
     //creating a constructor of the class Vertex
     Node(WayPoint value, int weight, Direction direction) {
         this.value = value;
