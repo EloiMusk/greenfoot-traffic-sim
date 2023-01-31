@@ -85,8 +85,9 @@ public class Car extends Actor {
     private void checkDistanceToNextCar() {
         Car nextCar = getNextCar();
         if (nextCar != null) {
+            Direction trajectoryToNextCar = new Vector(getX(), getY(), nextCar.getX(), nextCar.getY()).getOrientation();
             int distance = new Vector(getX(), getY(), nextCar.getX(), nextCar.getY()).getDistance();
-            if (distance < 150) {
+            if (distance < 200 && trajectoryToNextCar == orientation) {
                 decelerate();
             } else if (distance > 200) {
                 accelerateToSpeedLimit();
@@ -153,7 +154,7 @@ public class Car extends Actor {
             speed -= deceleration;
             driveState = DriveState.DECELERATING;
         } else {
-            deceleration = 5;
+            deceleration = 10;
             speed = 0;
             driveState = DriveState.STOPPED;
         }
