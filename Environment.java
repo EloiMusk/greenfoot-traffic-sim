@@ -1,9 +1,8 @@
-import greenfoot.Color;
-import greenfoot.Greenfoot;
-import greenfoot.GreenfootImage;
-import greenfoot.World;
+import greenfoot.*;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Environment extends World {
     public Graph roadNetwork = new Graph();
@@ -36,12 +35,11 @@ public class Environment extends World {
     }
 
     public void spawnCar() {
-        System.out.println(this.roadNetwork.getAllIncomingEdgeNodes().length);
-        int carCount = Greenfoot.getRandomNumber((this.roadNetwork.getAllIncomingEdgeNodes().length - getObjects(Car.class).toArray(Car[]::new).length) + 1);
+        int carCount = Greenfoot.getRandomNumber(this.roadNetwork.getAllIncomingEdgeNodes().length + 1);
         for (int i = 0; i < carCount; i++) {
             Car car = new Car();
             Car[] cars = getObjects(Car.class).toArray(Car[]::new);
-            WayPoint[] incomingWayPoints = Arrays.stream(this.roadNetwork.getAllIncomingEdgeNodes()).filter(wayPoint -> Arrays.stream(cars).noneMatch(searchCar -> searchCar.lastWayPoint == wayPoint)).toArray(WayPoint[]::new);
+            WayPoint[] incomingWayPoints = getValidStartWayPoints();
             if (incomingWayPoints.length == 0) {
                 return;
             }
@@ -52,6 +50,22 @@ public class Environment extends World {
             Node nextNode = edges[Greenfoot.getRandomNumber(edges.length)];
             car.setNextNode(nextNode);
         }
+    }
+
+    public WayPoint[] getValidStartWayPoints() {
+        return Arrays.stream(this.roadNetwork.getAllIncomingEdgeNodes()).filter(wayPoint -> Arrays.stream(getObjectsInRange(Car.class, 100, wayPoint.location).toArray(Car[]::new)).noneMatch(searchCar -> searchCar.lastWayPoint == wayPoint)).toArray(WayPoint[]::new);
+    }
+
+    public <T extends Actor> List<T> getObjectsInRange(Class<T> cls, int range, int x, int y) {
+        return getObjects(cls).stream().filter(obj -> new Vector(x, y, obj.getX(), obj.getY()).getDistance() <= range).collect(Collectors.toList());
+    }
+
+    public <T extends Actor> List<T> getObjectsInRange(Class<T> cls, int range, Position pos) {
+        return getObjects(cls).stream().filter(obj -> new Vector(pos, new Position(obj.getX(), obj.getY())).getDistance() <= range).collect(Collectors.toList());
+    }
+
+    public Car[] getIntersectingTraffic(Car car) {
+        return Arrays.stream(getObjects(Car.class).toArray(Car[]::new)).filter(otherCar -> otherCar.nextNode == car.nextNode).toArray(Car[]::new);
     }
 
     public void removeCar(Car car) {
@@ -115,7 +129,6 @@ public class Environment extends World {
         oldWayPoint = newWayPoint;
         newWayPoint = new WayPoint(new Position(newPos.x, newPos.y));
         roadNetwork.addNewEdge(new Edge(oldWayPoint, newWayPoint, Direction.NORTH), true);
-//        System.out.println(roadNetwork.toString());
     }
 
 

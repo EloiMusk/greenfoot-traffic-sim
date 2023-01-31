@@ -23,7 +23,7 @@ class Graph {
     }
 
     public Node[] getEdges(WayPoint source) {
-        return map.get(source).toArray(new Node[0]);
+        return map.get(source).toArray(Node[]::new);
     }
 
     public WayPoint getVertex(Position position) {

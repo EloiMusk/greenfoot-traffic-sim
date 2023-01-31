@@ -4,11 +4,8 @@ import greenfoot.Greenfoot;
 
 public class Car extends Actor {
 
-    private Node nextNode;
-
+    public Node nextNode;
     public WayPoint lastWayPoint;
-
-    private Direction orientation;
 
     public Car() {
         setImage("cars/" + (Greenfoot.getRandomNumber(3) + 1) + ".png");
@@ -26,7 +23,6 @@ public class Car extends Actor {
     }
 
     public void setOrientation(Direction direction) {
-        this.orientation = direction;
         switch (direction) {
             case NORTH:
                 setLocation(this.nextNode.value.location.x + 25, getY());
@@ -54,7 +50,7 @@ public class Car extends Actor {
 
     @Override
     public boolean isAtEdge() {
-        return (getX() <= getImage().getWidth() || getX() >= getWorld().getWidth() + getImage().getWidth() || getY() <= -getImage().getHeight() || getY() >= getWorld().getHeight() + getImage().getHeight());
+        return (getX() <= -getImage().getWidth() || getX() >= getWorld().getWidth() + getImage().getWidth() || getY() <= -getImage().getHeight() || getY() >= getWorld().getHeight() + getImage().getHeight());
     }
 
     private void checkPosition() {
