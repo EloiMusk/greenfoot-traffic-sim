@@ -9,6 +9,8 @@ public class Environment extends World {
     private boolean initialized = false;
     private int loopCount = 0;
 
+    private int carCount = 5;
+
     public Environment() {
         super(600, 600, 1, false);
         setBackground("textures/environment/1.jpg");
@@ -19,11 +21,8 @@ public class Environment extends World {
             init();
             initialized = true;
         }
-        if ((loopCount + Greenfoot.getRandomNumber(100)+1) % 100 == 0) {
+        if (carCount > getObjects(Car.class).size()) {
             spawnCar();
-            loopCount = 0;
-        } else {
-            loopCount++;
         }
     }
 
@@ -31,7 +30,6 @@ public class Environment extends World {
         generateGraph();
         markWayPoints();
         connectWayPoints();
-        spawnCar();
     }
 
     public void spawnCar() {
@@ -141,28 +139,34 @@ public class Environment extends World {
                 getBackground().setColor(Color.BLACK);
                 switch (edge.direction) {
                     case NORTH:
+                        showText("N: " + edge.speedLimit + " km/h", edge.value.location.x, edge.value.location.y - 10);
                         getBackground().fillRect(edge.value.location.x, edge.value.location.y, roadWidth, new Vector(wayPoint.location, edge.value.location).getDistance());
                         break;
                     case EAST:
                         if (edge.value.location.x < wayPoint.location.x) {
                             y = edge.value.location.y;
                             x = edge.value.location.x;
+                            showText("E: " + edge.speedLimit + " km/h", x - 50, y + 30);
                         } else {
                             y = wayPoint.location.y;
                             x = wayPoint.location.x;
+                            showText("E: " + edge.speedLimit + " km/h", x + 50, y + 30);
                         }
                         getBackground().fillRect(x, y, new Vector(wayPoint.location, edge.value.location).getDistance(), roadWidth);
                         break;
                     case SOUTH:
+                        showText("S: " + edge.speedLimit + " km/h", edge.value.location.x, edge.value.location.y + 10);
                         getBackground().fillRect(wayPoint.location.x - roadWidth, wayPoint.location.y, roadWidth, new Vector(wayPoint.location, edge.value.location).getDistance());
                         break;
                     case WEST:
                         if (edge.value.location.x < wayPoint.location.x) {
                             y = edge.value.location.y;
                             x = edge.value.location.x;
+                            showText("W: " + edge.speedLimit + " km/h", x + 50, y - 30);
                         } else {
                             y = wayPoint.location.y;
                             x = wayPoint.location.x;
+                            showText("W: " + edge.speedLimit + " km/h", x - 50, y - 30);
                         }
                         getBackground().fillRect(x, y - roadWidth, new Vector(wayPoint.location, edge.value.location).getDistance(), roadWidth);
                         break;
