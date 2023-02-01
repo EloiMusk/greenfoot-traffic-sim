@@ -1,10 +1,19 @@
+/**
+ * This class represents an edge in the graph. It contains the source, destination, weight and direction of the edge.
+ * @author EloiMusk
+ */
 public class Edge {
     int weight;
     WayPoint source;
     WayPoint destination;
     Direction direction;
 
-    //creating a constructor of the class Edge
+    /**
+     * Creates a new edge.
+     * @param source The source of the edge.
+     * @param destination The destination of the edge.
+     * @param direction The direction of the edge.
+     */
     Edge(WayPoint source, WayPoint destination, Direction direction) {
         this.source = source;
         this.destination = destination;

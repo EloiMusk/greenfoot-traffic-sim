@@ -5,31 +5,71 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class of the car object.
+ * This class is responsible for the controls of the car.
+ * It also contains the logic for the car to drive.
+ *
+ * @author EloiMusk
+ * @version 1.0
+ */
 public class Car extends Actor {
 
-    public Node finalNode;
+    /**
+     * The next node the car is going to
+     */
     public Node nextNode;
+    /**
+     * The last node the car was at
+     */
     public WayPoint lastWayPoint;
-
+    /**
+     * The speed of the car
+     */
     private int speed;
 
+    /**
+     * The acceleration of the car
+     */
     private int acceleration = 5;
 
+    /**
+     * The deceleration of the car
+     */
     private int deceleration = 5;
+
+    /**
+     * If the car is turning
+     */
     private boolean isTurning = false;
 
+    /**
+     * The current state of the car
+     */
     private DriveState driveState = DriveState.CRUISING;
 
+    /**
+     * The current orientation of the car
+     */
     public Direction orientation;
 
+    /**
+     * A Map of the right of way of the car for each direction
+     */
     public Map<Direction, Boolean> rightOfWay = new HashMap<Direction, Boolean>();
 
+    /**
+     * Constructor of the car object
+     */
     public Car() {
         setImage("cars/" + (Greenfoot.getRandomNumber(3) + 1) + ".png");
         int newHeight = (int) (getImage().getHeight() * (50.0 / getImage().getWidth()));
         getImage().scale(50, newHeight);
     }
 
+    /**
+     * act method of the Actor class
+     */
     public void act() {
         checkSpeed();
         checkDistanceToNextCar();
@@ -38,17 +78,24 @@ public class Car extends Actor {
         checkCollision();
     }
 
+    /**
+     * Checks if the car has crashed
+     */
     private void checkCollision() {
         try {
             if (isTouching(Car.class)) {
                 this.destroy();
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Car crashed");
         }
 
     }
 
+    /**
+     * Sets the next node of the car
+     * @param node
+     */
     public void setNextNode(Node node) {
         if (node == null) {
             this.destroy();
@@ -59,6 +106,10 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * sets the orientation of the car
+     * @param direction
+     */
     public void setOrientation(Direction direction) {
         this.orientation = direction;
         switch (direction) {
@@ -81,11 +132,17 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * destroys the instance of the car
+     */
     private void destroy() {
         Environment world = (Environment) getWorld();
         world.removeCar(this);
     }
 
+    /**
+     * Checks the distance to the next node and if the car is at the edge of the world
+     */
     private void checkPosition() {
         if (isAtEdge()) {
             this.destroy();
@@ -95,6 +152,10 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * Starts a turn towards the next node
+     * @param nextNode
+     */
     private void startTurning(Node nextNode) {
         if (nextNode == null) {
             return;
@@ -105,6 +166,10 @@ public class Car extends Actor {
         turnInDirection(nextNode.direction);
     }
 
+    /**
+     * turns the car towards a direction
+     * @param direction
+     */
     private void turnInDirection(Direction direction) {
         switch (direction) {
             case NORTH:
@@ -154,6 +219,9 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * Checks the distance to the next car
+     */
     private void checkDistanceToNextCar() {
         Car nextCar = getNextCar();
         if (nextCar != null) {
@@ -170,6 +238,11 @@ public class Car extends Actor {
 
     }
 
+    /**
+     * Checks if the car from the parameter is in front of the car
+     * @param nextCar
+     * @return true if the car is closer than 50 pixels
+     */
     private boolean isNextCarInFront(Car nextCar) {
         if (nextCar != null) {
             int distance = new Vector(getX(), getY(), nextCar.getX(), nextCar.getY()).getDistance();
@@ -178,6 +251,10 @@ public class Car extends Actor {
         return false;
     }
 
+    /**
+     * Gets the next car in front of the car
+     * @return the next car in front of the car
+     */
     private Car getNextCar() {
         return Arrays.stream(getObjectsInRange(200, Car.class).toArray(new Car[0])).filter(this::isNextCarInFront).sorted((car1, car2) -> {
             switch (this.orientation) {
@@ -194,6 +271,9 @@ public class Car extends Actor {
         }).findFirst().orElse(null);
     }
 
+    /**
+     * Checks the speed of the car
+     */
     private void checkSpeed() {
         int speedLimit = nextNode.speedLimit;
         if (speed > speedLimit) {
@@ -205,12 +285,18 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * Accelerates the car
+     */
     private void accelerate() {
         deceleration = 5;
         speed += acceleration;
         driveState = DriveState.ACCELERATING;
     }
 
+    /**
+     * Accelerates the car to the speed limit
+     */
     private void accelerateToSpeedLimit() {
         if (speed < nextNode.speedLimit) {
             accelerate();
@@ -220,6 +306,9 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * Decelerates the car
+     */
     private void decelerate() {
         if (speed > 0) {
             deceleration = deceleration * 2;
@@ -232,11 +321,19 @@ public class Car extends Actor {
         }
     }
 
+    /**
+     * Overrides the isAtEdge method to check if the car is at the edge of the world respecting the bounds of the car
+     * @return true if the car is at the edge of the world
+     */
     @Override
     public boolean isAtEdge() {
         return (getX() <= -getImage().getWidth() || getX() >= getWorld().getWidth() + getImage().getWidth() || getY() <= -getImage().getHeight() || getY() >= getWorld().getHeight() + getImage().getHeight());
     }
 
+    /**
+     * Overrides the move method to move the car to work with the speed of the car
+     * @param speed
+     */
     @Override
     public void move(int speed) {
         if (isTurning) {
