@@ -19,7 +19,7 @@ public class Environment extends World {
             init();
             initialized = true;
         }
-        if (loopCount % 100 == 0) {
+        if ((loopCount + Greenfoot.getRandomNumber(100)+1) % 100 == 0) {
             spawnCar();
             loopCount = 0;
         } else {

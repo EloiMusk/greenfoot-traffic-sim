@@ -31,7 +31,6 @@ public class Car extends Actor {
     }
 
     public void act() {
-        checkSurroundings();
         checkSpeed();
         checkDistanceToNextCar();
         move(speed);
@@ -141,10 +140,6 @@ public class Car extends Actor {
                 }
                 break;
         }
-    }
-
-    private void checkSurroundings() {
-        checkDistanceToNextCar();
     }
 
     private void checkDistanceToNextCar() {
