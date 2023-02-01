@@ -66,8 +66,12 @@ public class Environment extends World {
     }
 
     public void removeCar(Car car) {
-        removeObject(car);
-        spawnCar();
+        try {
+            removeObject(car);
+            spawnCar();
+        } catch (Exception e) {
+            System.out.println("Error removing car");
+        }
     }
 
     public Node getRandomNextNode(Node node) {

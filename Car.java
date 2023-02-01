@@ -35,6 +35,18 @@ public class Car extends Actor {
         checkDistanceToNextCar();
         move(speed);
         checkPosition();
+        checkCollision();
+    }
+
+    private void checkCollision() {
+        try {
+            if (isTouching(Car.class)) {
+                this.destroy();
+            }
+        }catch (Exception e) {
+            System.out.println("Car crashed");
+        }
+
     }
 
     public void setNextNode(Node node) {
