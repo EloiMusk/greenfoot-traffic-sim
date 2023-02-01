@@ -35,21 +35,20 @@ public class Environment extends World {
     }
 
     public void spawnCar() {
-        int carCount = Greenfoot.getRandomNumber(this.roadNetwork.getAllIncomingEdgeNodes().length + 1);
-        for (int i = 0; i < carCount; i++) {
-            Car car = new Car();
-            Car[] cars = getObjects(Car.class).toArray(Car[]::new);
-            WayPoint[] incomingWayPoints = getValidStartWayPoints();
-            if (incomingWayPoints.length == 0) {
-                return;
-            }
-            WayPoint startWayPoint = incomingWayPoints[Greenfoot.getRandomNumber(incomingWayPoints.length)];
-            car.lastWayPoint = startWayPoint;
-            addObject(car, startWayPoint.location.x, startWayPoint.location.y);
-            Node[] edges = this.roadNetwork.getEdges(startWayPoint);
-            Node nextNode = edges[Greenfoot.getRandomNumber(edges.length)];
-            car.setNextNode(nextNode);
+//        int carCount = Greenfoot.getRandomNumber(this.roadNetwork.getAllIncomingEdgeNodes().length + 1);
+        Car car = new Car();
+//        Car[] cars = getObjects(Car.class).toArray(Car[]::new);
+        WayPoint[] incomingWayPoints = getValidStartWayPoints();
+        if (incomingWayPoints.length == 0) {
+            return;
         }
+        WayPoint startWayPoint = incomingWayPoints[Greenfoot.getRandomNumber(incomingWayPoints.length)];
+        car.lastWayPoint = startWayPoint;
+        addObject(car, startWayPoint.location.x, startWayPoint.location.y);
+        Node[] edges = this.roadNetwork.getEdges(startWayPoint);
+        Node nextNode = edges[Greenfoot.getRandomNumber(edges.length)];
+        car.setNextNode(nextNode);
+
     }
 
     public WayPoint[] getValidStartWayPoints() {

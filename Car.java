@@ -1,11 +1,13 @@
 import greenfoot.Actor;
-import greenfoot.Color;
 import greenfoot.Greenfoot;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Car extends Actor {
 
+    public Node finalNode;
     public Node nextNode;
     public WayPoint lastWayPoint;
 
@@ -14,10 +16,13 @@ public class Car extends Actor {
     private int acceleration = 5;
 
     private int deceleration = 5;
+    private boolean isTurning = false;
 
     private DriveState driveState = DriveState.CRUISING;
 
     public Direction orientation;
+
+    public Map<Direction, Boolean> rightOfWay = new HashMap<Direction, Boolean>();
 
     public Car() {
         setImage("cars/" + (Greenfoot.getRandomNumber(3) + 1) + ".png");
@@ -38,6 +43,7 @@ public class Car extends Actor {
             this.destroy();
         } else {
             this.nextNode = node;
+            Environment world = (Environment) getWorld();
             setOrientation(this.nextNode.direction);
         }
     }
@@ -72,9 +78,68 @@ public class Car extends Actor {
     private void checkPosition() {
         if (isAtEdge()) {
             this.destroy();
-        } else if (new Vector(getX(), getY(), nextNode.value.location.x, nextNode.value.location.y).getDistance() <= 25) {
+        } else if (new Vector(getX(), getY(), nextNode.value.location.x, nextNode.value.location.y).getDistance() <= 50 && !isTurning) {
             Environment world = (Environment) getWorld();
-            setNextNode(world.getRandomNextNode(nextNode));
+            startTurning(world.getRandomNextNode(nextNode));
+        }
+    }
+
+    private void startTurning(Node nextNode) {
+        if (nextNode == null) {
+            return;
+        }
+        this.isTurning = true;
+        this.nextNode = nextNode;
+        this.lastWayPoint = nextNode.value;
+        turnInDirection(nextNode.direction);
+    }
+
+    private void turnInDirection(Direction direction) {
+        switch (direction) {
+            case NORTH:
+                if (getRotation() < 270) {
+                    turn(10);
+                } else if (getRotation() > 270) {
+                    turn(-10);
+                }
+                if (getRotation() > 260 && getRotation() < 280) {
+                    this.isTurning = false;
+                    setOrientation(direction);
+                }
+                break;
+            case EAST:
+                if (getRotation() < 0) {
+                    turn(10);
+                } else if (getRotation() > 0) {
+                    turn(-10);
+                }
+                if (getRotation() > -10 && getRotation() < 10) {
+                    this.isTurning = false;
+                    setOrientation(direction);
+                }
+                break;
+            case SOUTH:
+                if (getRotation() < 90) {
+                    turn(10);
+                } else if (getRotation() > 90) {
+                    turn(-10);
+                }
+                if (getRotation() > 80 && getRotation() < 100) {
+                    this.isTurning = false;
+                    setOrientation(direction);
+                }
+                break;
+            case WEST:
+                if (getRotation() < 180) {
+                    turn(10);
+                } else if (getRotation() > 180) {
+                    turn(-10);
+                }
+                if (getRotation() > 170 && getRotation() < 190) {
+                    this.isTurning = false;
+                    setOrientation(direction);
+                }
+                break;
         }
     }
 
@@ -167,8 +232,13 @@ public class Car extends Actor {
 
     @Override
     public void move(int speed) {
-        int distance = speed / 20;
-        super.move(distance);
+        if (isTurning) {
+            turnInDirection(nextNode.direction);
+            super.move(speed / 15);
+        } else {
+            int distance = speed / 20;
+            super.move(distance);
+        }
     }
 
 }
