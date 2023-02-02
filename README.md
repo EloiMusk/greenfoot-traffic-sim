@@ -31,11 +31,24 @@ The simulation/game is aimed at learners who are eager to learn and especially a
 ## Usage
 The simulation can be run on a computer with a graphics interface. To start the simulation, follow the instructions provided in the repository.
 
+### For Prod
+1. Open the traffic simulation application in Greenfoot.
+2. Click the Start button to start the simulation.
+3. Observe what is happening.
+
+To generate a new road network, press the Reset button, then click the Start button again.
+
+### For Testing
+1. Open the traffic simulation application in Greenfoot. 
+2. Click the Start button to start the simulation.
+3. Observe what is happening. 
+#### Set Car Count
+To set the number of cars on the road at one time, modify the carCount variable in the Environmet.java file on line 33.
+#### Set Speed Limit Range
+To change the range of speed limits that can be set, modify the class constructors on line 41 where the speed limit variable is set.
+
 ## Contributing
 If you would like to contribute to this project, please feel free to submit a pull request or reach out to the repository owner for further information.
-
-## License
-This project is licensed under the [insert license name here]. Please refer to the [LICENSE file](LICENSE) for more information.
 
 ## Acknowledgements
 This project was inspired by the need to educate and prepare learners for the rules of the road. Special thanks to all those who have contributed to the development of this simulation.

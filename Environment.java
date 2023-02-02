@@ -28,7 +28,7 @@ public class Environment extends World {
     private int loopCount = 0;
 
     /**
-     * Represents the number of cars that should be spawned.
+     * Represents the number of cars that should be spawned. Change this to change the number of cars.
      */
     private int carCount = 5;
 
