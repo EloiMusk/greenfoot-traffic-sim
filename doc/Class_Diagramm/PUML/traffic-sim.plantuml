@@ -1,0 +1,128 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Car {
+  + Car(): 
+  + nextNode: Node
+  + orientation: Direction
+  - accelerate(): void
+  - startTurning(Node): void
+  - accelerateToSpeedLimit(): void
+  - checkSpeed(): void
+  - checkDistanceToNextCar(): void
+  - destroy(): void
+  - decelerate(): void
+  + act(): void
+  - checkCollision(): void
+  - turnInDirection(Direction): void
+  - isNextCarInFront(Car): boolean
+  + move(int): void
+  - checkPosition(): void
+   orientation: Direction
+   nextCar: Car
+   atEdge: boolean
+   nextNode: Node
+}
+enum Direction << enumeration >> {
+  + Direction(): 
+  + reverseDirection(): Direction?
+  + valueOf(String): Direction
+  + values(): Direction[]
+}
+enum DriveState << enumeration >> {
+  + DriveState(): 
+  + values(): DriveState[]
+  + valueOf(String): DriveState
+}
+class Edge {
+  ~ Edge(WayPoint, WayPoint, Direction): 
+}
+class Environment {
+  + Environment(): 
+  + removeCar(Car): void
+  - connectWayPoints(): void
+  - generateGraph(): void
+  + getObjectsInRange(Class<T>, int, Position): List<T>
+  + getRandomNextNode(Node): Node
+  - markWayPoints(): void
+  + spawnCar(): void
+  + getIntersectingTraffic(Car): Car[]
+  + act(): void
+  + init(): void
+  + getObjectsInRange(Class<T>, int, int, int): List<T>
+   validStartWayPoints: WayPoint[]
+}
+class Graph {
+  + Graph(): 
+  - currentWayPoint: WayPoint
+  + containsEdge(WayPoint, WayPoint): void
+  + addNewEdge(Edge, boolean): void
+  + containsVertex(WayPoint): void
+  + getEdges(WayPoint): Node[]
+  + getVertex(Position): WayPoint
+  + countVertices(): void
+  + addNewVertex(WayPoint): void
+  + toString(): String
+  + countEdges(boolean): void
+   vertices: WayPoint[]
+   currentWayPoint: WayPoint
+   allIncomingEdgeNodes: WayPoint[]
+}
+class Node {
+  ~ Node(WayPoint, int, Direction): 
+  + toString(): String
+}
+class Position {
+  + Position(int, int): 
+}
+class Vector {
+  + Vector(int, int, int, int): 
+  + Vector(Position, Position): 
+  + getIntersection(Vector): Position
+   orientation: Direction
+   direction: int
+   distance: int
+}
+class WayPoint {
+  + WayPoint(Position): 
+  + isWest(WayPoint): boolean
+  + isNorth(WayPoint): boolean
+  + toString(): String
+  + isSouth(WayPoint): boolean
+  + isEast(WayPoint): boolean
+}
+enum WayPointType << enumeration >> {
+  + WayPointType(): 
+  + values(): WayPointType[]
+  + valueOf(String): WayPointType
+}
+
+Car           -[#595959,dashed]->  Car          : "«create»"
+Car          "1" *-[#595959,plain]-> "rightOfWay\n*" Direction    
+Car          "1" *-[#595959,plain]-> "driveState\n1" DriveState   
+Car          "1" *-[#595959,plain]-> "nextNode\n1" Node         
+Car           -[#595959,dashed]->  Vector       : "«create»"
+Car          "1" *-[#595959,plain]-> "lastWayPoint\n1" WayPoint     
+Edge         "1" *-[#595959,plain]-> "direction\n1" Direction    
+Edge          -[#595959,dashed]->  Vector       : "«create»"
+Edge         "1" *-[#595959,plain]-> "source\n1" WayPoint     
+Environment   -[#595959,dashed]->  Car          : "«create»"
+Environment   -[#595959,dashed]->  Edge         : "«create»"
+Environment   -[#595959,dashed]->  Graph        : "«create»"
+Environment  "1" *-[#595959,plain]-> "roadNetwork\n1" Graph        
+Environment   -[#595959,dashed]->  Position     : "«create»"
+Environment   -[#595959,dashed]->  Vector       : "«create»"
+Environment   -[#595959,dashed]->  WayPoint     : "«create»"
+Graph         -[#595959,dashed]->  Node         : "«create»"
+Graph         -[#595959,dashed]->  WayPoint     : "«create»"
+Graph        "1" *-[#595959,plain]-> "map\n*" WayPoint     
+Node         "1" *-[#595959,plain]-> "direction\n1" Direction    
+Node         "1" *-[#595959,plain]-> "value\n1" WayPoint     
+Vector        -[#595959,dashed]->  Position     : "«create»"
+Vector       "1" *-[#595959,plain]-> "a\n1" Position     
+WayPoint     "1" *-[#595959,plain]-> "location\n1" Position     
+WayPoint     "1" *-[#595959,plain]-> "type\n1" WayPointType 
+@enduml
