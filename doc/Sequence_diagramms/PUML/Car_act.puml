@@ -1,0 +1,268 @@
+@startuml
+participant Actor
+Actor -> Car : act
+activate Car
+Car -> Car : checkSpeed
+activate Car
+Car -> Car : decelerate
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : accelerate
+activate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car -> Car : checkDistanceToNextCar
+activate Car
+Car -> Car : getNextCar
+activate Car
+Car -> Car : isNextCarInFront
+activate Car
+create Vector
+Car -> Vector : new
+activate Vector
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+Vector --> Car
+deactivate Vector
+Car -> Vector : getDistance
+activate Vector
+Vector --> Car
+deactivate Vector
+Car --> Car
+deactivate Car
+Car -> Car : () ->
+activate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+create Vector
+Car -> Vector : new
+activate Vector
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+Vector --> Car
+deactivate Vector
+Car -> Vector : getOrientation
+activate Vector
+Vector -> Vector : getDirection
+activate Vector
+Vector --> Vector
+deactivate Vector
+Vector --> Car
+deactivate Vector
+create Vector
+Car -> Vector : new
+activate Vector
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+Vector --> Car
+deactivate Vector
+Car -> Vector : getDistance
+activate Vector
+Vector --> Car
+deactivate Vector
+Car -> Car : decelerate
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : accelerateToSpeedLimit
+activate Car
+Car -> Car : accelerate
+activate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car -> Car : accelerateToSpeedLimit
+activate Car
+Car -> Car : accelerate
+activate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car -> Car : move
+activate Car
+Car -> Car : turnInDirection
+activate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car -> Car : checkPosition
+activate Car
+Car -> Car : isAtEdge
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : destroy
+activate Car
+Car -> Environment : removeCar
+activate Environment
+Environment -> Environment : spawnCar
+activate Environment
+create Car
+Environment -> Car : new
+activate Car
+Car --> Environment
+deactivate Car
+Environment -> Environment : getValidStartWayPoints
+activate Environment
+Environment --> Environment
+deactivate Environment
+Environment -> Graph : getEdges
+activate Graph
+Graph --> Environment
+deactivate Graph
+Environment -> Car : setNextNode
+activate Car
+Car --> Environment
+deactivate Car
+Environment --> Environment
+deactivate Environment
+Environment --> Car
+deactivate Environment
+Car --> Car
+deactivate Car
+create Vector
+Car -> Vector : new
+activate Vector
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+create Position
+Vector -> Position : new
+activate Position
+Position --> Vector
+deactivate Position
+Vector --> Car
+deactivate Vector
+Car -> Vector : getDistance
+activate Vector
+Vector --> Car
+deactivate Vector
+Car -> Environment : getRandomNextNode
+activate Environment
+Environment -> Graph : getEdges
+activate Graph
+Graph --> Environment
+deactivate Graph
+Environment -> Environment : () ->
+activate Environment
+Environment -> Direction : reverseDirection
+activate Direction
+Direction --> Environment
+deactivate Direction
+Environment --> Environment
+deactivate Environment
+Environment --> Car
+deactivate Environment
+Car -> Car : startTurning
+activate Car
+Car -> Car : turnInDirection
+activate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+Car -> Car : checkCollision
+activate Car
+Car -> Car : destroy
+activate Car
+Car -> Environment : removeCar
+activate Environment
+Environment -> Environment : spawnCar
+activate Environment
+create Car
+Environment -> Car : new
+activate Car
+Car --> Environment
+deactivate Car
+Environment -> Environment : getValidStartWayPoints
+activate Environment
+Environment --> Environment
+deactivate Environment
+Environment -> Graph : getEdges
+activate Graph
+Graph --> Environment
+deactivate Graph
+Environment -> Car : setNextNode
+activate Car
+Car --> Environment
+deactivate Car
+Environment --> Environment
+deactivate Environment
+Environment --> Car
+deactivate Environment
+Car --> Car
+deactivate Car
+Car --> Car
+deactivate Car
+return
+@enduml

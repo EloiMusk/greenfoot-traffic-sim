@@ -1,0 +1,465 @@
+@startuml
+participant Actor
+Actor -> Environment : act
+activate Environment
+Environment -> Environment : init
+activate Environment
+Environment -> Environment : generateGraph
+activate Environment
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Edge
+Environment -> Edge : new
+activate Edge
+create Vector
+Edge -> Vector : new
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge -> Vector : getDistance
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge --> Environment
+deactivate Edge
+Environment -> Graph : addNewEdge
+activate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph -> Direction : reverseDirection
+activate Direction
+Direction --> Graph
+deactivate Direction
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph --> Environment
+deactivate Graph
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Edge
+Environment -> Edge : new
+activate Edge
+create Vector
+Edge -> Vector : new
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge -> Vector : getDistance
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge --> Environment
+deactivate Edge
+Environment -> Graph : addNewEdge
+activate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph -> Direction : reverseDirection
+activate Direction
+Direction --> Graph
+deactivate Direction
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph --> Environment
+deactivate Graph
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Edge
+Environment -> Edge : new
+activate Edge
+create Vector
+Edge -> Vector : new
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge -> Vector : getDistance
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge --> Environment
+deactivate Edge
+Environment -> Graph : addNewEdge
+activate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph -> Direction : reverseDirection
+activate Direction
+Direction --> Graph
+deactivate Direction
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph --> Environment
+deactivate Graph
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Edge
+Environment -> Edge : new
+activate Edge
+create Vector
+Edge -> Vector : new
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge -> Vector : getDistance
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge --> Environment
+deactivate Edge
+Environment -> Graph : addNewEdge
+activate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph -> Direction : reverseDirection
+activate Direction
+Direction --> Graph
+deactivate Direction
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph --> Environment
+deactivate Graph
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Edge
+Environment -> Edge : new
+activate Edge
+create Vector
+Edge -> Vector : new
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge -> Vector : getDistance
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge --> Environment
+deactivate Edge
+Environment -> Graph : addNewEdge
+activate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph -> Direction : reverseDirection
+activate Direction
+Direction --> Graph
+deactivate Direction
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph --> Environment
+deactivate Graph
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create WayPoint
+Environment -> WayPoint : new
+activate WayPoint
+WayPoint --> Environment
+deactivate WayPoint
+create Edge
+Environment -> Edge : new
+activate Edge
+create Vector
+Edge -> Vector : new
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge -> Vector : getDistance
+activate Vector
+Vector --> Edge
+deactivate Vector
+Edge --> Environment
+deactivate Edge
+Environment -> Graph : addNewEdge
+activate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph -> Graph : addNewVertex
+activate Graph
+Graph --> Graph
+deactivate Graph
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph -> Direction : reverseDirection
+activate Direction
+Direction --> Graph
+deactivate Direction
+create Node
+Graph -> Node : new
+activate Node
+Node --> Graph
+deactivate Node
+Graph --> Environment
+deactivate Graph
+Environment --> Environment
+deactivate Environment
+Environment -> Environment : markWayPoints
+activate Environment
+Environment -> Graph : getVertices
+activate Graph
+Graph --> Environment
+deactivate Graph
+Environment --> Environment
+deactivate Environment
+Environment -> Environment : connectWayPoints
+activate Environment
+Environment -> Graph : getVertices
+activate Graph
+Graph --> Environment
+deactivate Graph
+Environment -> Graph : getEdges
+activate Graph
+Graph --> Environment
+deactivate Graph
+create Vector
+Environment -> Vector : new
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment -> Vector : getDistance
+activate Vector
+Vector --> Environment
+deactivate Vector
+create Vector
+Environment -> Vector : new
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment -> Vector : getDistance
+activate Vector
+Vector --> Environment
+deactivate Vector
+create Vector
+Environment -> Vector : new
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment -> Vector : getDistance
+activate Vector
+Vector --> Environment
+deactivate Vector
+create Vector
+Environment -> Vector : new
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment -> Vector : getDistance
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment --> Environment
+deactivate Environment
+Environment --> Environment
+deactivate Environment
+Environment -> Environment : spawnCar
+activate Environment
+create Car
+Environment -> Car : new
+activate Car
+Car --> Environment
+deactivate Car
+Environment -> Environment : getValidStartWayPoints
+activate Environment
+Environment -> Graph : getAllIncomingEdgeNodes
+activate Graph
+Graph -> Graph : () ->
+activate Graph
+Graph --> Graph
+deactivate Graph
+Graph --> Environment
+deactivate Graph
+Environment -> Environment : () ->
+activate Environment
+Environment -> Environment : getObjectsInRange
+activate Environment
+Environment -> Environment : () ->
+activate Environment
+create Position
+Environment -> Position : new
+activate Position
+Position --> Environment
+deactivate Position
+create Vector
+Environment -> Vector : new
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment -> Vector : getDistance
+activate Vector
+Vector --> Environment
+deactivate Vector
+Environment --> Environment
+deactivate Environment
+Environment --> Environment
+deactivate Environment
+Environment -> Environment : () ->
+activate Environment
+Environment --> Environment
+deactivate Environment
+Environment --> Environment
+deactivate Environment
+Environment --> Environment
+deactivate Environment
+Environment -> Graph : getEdges
+activate Graph
+Graph --> Environment
+deactivate Graph
+Environment -> Car : setNextNode
+activate Car
+Car -> Car : destroy
+activate Car
+Car -> Environment : removeCar
+activate Environment
+Environment -> Environment : spawnCar
+activate Environment
+Environment --> Environment
+deactivate Environment
+Environment --> Car
+deactivate Environment
+Car --> Car
+deactivate Car
+Car -> Car : setOrientation
+activate Car
+Car --> Car
+deactivate Car
+Car --> Environment
+deactivate Car
+Environment --> Environment
+deactivate Environment
+return
+@enduml
