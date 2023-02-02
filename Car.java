@@ -94,7 +94,7 @@ public class Car extends Actor {
 
     /**
      * Sets the next node of the car
-     * @param node
+     * @param node the next node
      */
     public void setNextNode(Node node) {
         if (node == null) {
@@ -108,7 +108,7 @@ public class Car extends Actor {
 
     /**
      * sets the orientation of the car
-     * @param direction
+     * @param direction the orientation of the car
      */
     public void setOrientation(Direction direction) {
         this.orientation = direction;
@@ -332,7 +332,7 @@ public class Car extends Actor {
 
     /**
      * Overrides the move method to move the car to work with the speed of the car
-     * @param speed
+     * @param speed the speed of the car
      */
     @Override
     public void move(int speed) {

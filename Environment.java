@@ -59,6 +59,7 @@ public class Environment extends World {
      * Initializes the environment.
      * Generates the road network and draws it.
      * Only called once.
+     *
      * @see #generateGraph()
      * @see #markWayPoints()
      * @see #connectWayPoints()
@@ -91,6 +92,7 @@ public class Environment extends World {
 
     /**
      * Gets all incoming edge nodes that are not occupied by a car.
+     *
      * @return An array of all valid incoming edge nodes.
      */
     public WayPoint[] getValidStartWayPoints() {
@@ -98,25 +100,27 @@ public class Environment extends World {
     }
 
     /**
-     * Gets all objects of a certain class within a certain range of a position.
-     * @param cls
-     * @param range
-     * @param x
-     * @param y
+     * Gets all objects of a certain class within a certain range of a position. With x and y coordinates.
+     *
+     * @param cls   The class of the objects to search for.
+     * @param range The range to search in.
+     * @param x     The x position to search from.
+     * @param y     The y position to search from.
+     * @param <T>   Placeholder for the class of the objects to search for.
      * @return A list of all objects of the specified class within the specified range of the specified position.
-     * @param <T>
      */
     public <T extends Actor> List<T> getObjectsInRange(Class<T> cls, int range, int x, int y) {
         return getObjects(cls).stream().filter(obj -> new Vector(x, y, obj.getX(), obj.getY()).getDistance() <= range).collect(Collectors.toList());
     }
 
     /**
-     * Gets all objects of a certain class within a certain range of a position.
-     * @param cls
-     * @param range
-     * @param pos
+     * Gets all objects of a certain class within a certain range of a position. With a position object.
+     *
+     * @param cls   The class of the objects to search for.
+     * @param range The range to search in.
+     * @param pos   The position to search from.
+     * @param <T>   Placeholder for the class of the objects to search for.
      * @return A list of all objects of the specified class within the specified range of the specified position.
-     * @param <T>
      */
     public <T extends Actor> List<T> getObjectsInRange(Class<T> cls, int range, Position pos) {
         return getObjects(cls).stream().filter(obj -> new Vector(pos, new Position(obj.getX(), obj.getY())).getDistance() <= range).collect(Collectors.toList());
@@ -124,7 +128,8 @@ public class Environment extends World {
 
     /**
      * Gets all intersecting traffic of a car.
-     * @param car
+     *
+     * @param car The car to get the intersecting traffic of.
      * @return An array of all intersecting traffic of the specified car.
      */
     public Car[] getIntersectingTraffic(Car car) {
@@ -133,7 +138,8 @@ public class Environment extends World {
 
     /**
      * Removes a car from the environment.
-     * @param car
+     *
+     * @param car The car to remove.
      */
     public void removeCar(Car car) {
         try {
@@ -146,8 +152,9 @@ public class Environment extends World {
 
     /**
      * Gets a random next node from a node.
-     * @param node
-     * @return
+     *
+     * @param node The node to get the random next node from.
+     * @return A random next node from the specified node.
      */
     public Node getRandomNextNode(Node node) {
         Node[] edges = Arrays.stream(this.roadNetwork.getEdges(node.value)).filter(edge -> edge.direction != node.direction.reverseDirection()).toArray(Node[]::new);

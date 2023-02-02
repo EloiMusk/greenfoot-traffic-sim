@@ -1,29 +1,74 @@
+/**
+ * A vector is a line between two points as defined by two positions.
+ * It can be used to calculate the distance between two points, the direction of the line,
+ * the orientation of the line, and the intersection of two lines.
+ *
+ * @author EloiMusk
+ * @version 1.0
+ */
 public class Vector {
+
+    /**
+     * The first position of the vector.
+     */
     public Position a;
+
+    /**
+     * The second position of the vector.
+     */
     public Position b;
 
+    /**
+     * Creates a new vector based on two positions.
+     *
+     * @param a The first position of the vector.
+     * @param b The second position of the vector.
+     */
     public Vector(Position a, Position b) {
         this.a = a;
         this.b = b;
     }
 
+    /**
+     * Creates a new vector based on two coordinates.
+     *
+     * @param x1 The x coordinate of the first position.
+     * @param y1 The y coordinate of the first position.
+     * @param x2 The x coordinate of the second position.
+     * @param y2 The y coordinate of the second position.
+     */
     public Vector(int x1, int y1, int x2, int y2) {
         this.a = new Position(x1, y1);
         this.b = new Position(x2, y2);
     }
 
+    /**
+     * Calculates the distance between the two positions.
+     *
+     * @return The distance between the two positions.
+     */
     public int getDistance() {
         int x = b.x - a.x;
         int y = b.y - a.y;
         return (int) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
+    /**
+     * Calculates the direction of the line.
+     *
+     * @return The direction of the line.
+     */
     public int getDirection() {
         int x = b.x - a.x;
         int y = b.y - a.y;
         return (int) Math.toDegrees(Math.atan2(y, x));
     }
 
+    /**
+     * Calculates the orientation of the line.
+     *
+     * @return The orientation of the line.
+     */
     public Direction getOrientation() {
         int direction = getDirection();
         if (direction >= 0 && direction < 45) {
@@ -39,6 +84,12 @@ public class Vector {
         }
     }
 
+    /**
+     * Calculates the intersection of two lines.
+     *
+     * @param vector The vector to calculate the intersection with.
+     * @return The intersection of the two lines.
+     */
     public Position getIntersection(Vector vector) {
         int x1 = a.x;
         int y1 = a.y;
